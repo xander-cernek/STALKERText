@@ -1,4 +1,12 @@
 --- STALKER v0.1 ---
+_G.PLAYER = {
+	name = "IRON HANDS",
+	health = 10,
+	weight = 0,
+	value = 0,
+	ap = 10,
+	weapons = {}
+}
 --- REQUIRES ---
 local guns = require "guns"
 local rooms = require "rooms"
@@ -47,14 +55,6 @@ end
 -- Register events
 register_event(ON_ENEMY_KILLED, OnEnemyKilled)
 
-PLAYER = {
-	name = "IRON HANDS",
-	health = 10,
-	weight = 0,
-	value = 0,
-	ap = 10,
-	weapons = {}
-}
 currentAp = PLAYER.ap
 
 ACTIVE_ENEMY = {

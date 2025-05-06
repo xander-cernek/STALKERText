@@ -1,7 +1,6 @@
 -- Directory for rooms
-enemies = require "enemies"
-mtEnemies = {}
-setmetatable(enemies, mtEnemies)
+local enemies = require "enemies"
+
 local rooms = {}
 
 -- Room types
@@ -10,24 +9,26 @@ FIGHT_ROOM = function()
 	local randomEnemy = enemies[randomIndex]
 	ACTIVE_ENEMY.name = randomEnemy.name
 	ACTIVE_ENEMY.hp = randomEnemy.hp
+	ACTIVE_ENEMY.attack = randomEnemy.attack
 
 	while(ACTIVE_ENEMY.hp > 0) do
 		local activeEnemy = string.format(ENEMY_TEXT_EN, ACTIVE_ENEMY.name, ACTIVE_ENEMY.hp)
 		print(activeEnemy)
 
-		for i=1,#PLAYER.weapons do
-			local weapon = PLAYER.weapons[i]
+		for i=1,#_G.PLAYER.weapons do
+			local weapon = _G.PLAYER.weapons[i]
 			local formattedString = string.format(WEAPON_TEXT_EN, i, weapon.name, weapon.damage, weapon.ap)
 			print(formattedString)
 			print(END_TURN_OPTION_EN)
 		end
 
+		-- Player attack as long as they have action points (ap)
 		while (currentAp > 0 and ACTIVE_ENEMY.hp > 0) do
 			local option = io.read("*n")
 			if (option == 0) then
 				break
 			end
-			local weapon = PLAYER.weapons[option]
+			local weapon = _G.PLAYER.weapons[option]
 			if (currentAp >= weapon.ap) then
 				weapon.exec()
 			else
@@ -35,7 +36,10 @@ FIGHT_ROOM = function()
 			end
 		end
 
-		currentAp = PLAYER.ap
+		-- Enemy attack
+		randomEnemy.attack()
+
+		currentAp = _G.PLAYER.ap
 		ZONE_LEVEL_PROGRESS_BAR = ZONE_LEVEL_PROGRESS_BAR .. "x"
 	end
 		
@@ -50,7 +54,7 @@ end
 -- Level 1 Rooms
 ZOMBIE_ROOM = {
 	name = "Zombie Room",
-	flavor = "You see a Zombie in front of you!",
+	flavor = "The stench of rotting flesh cursed by Radiation burns your nose.",
 	exec = FIGHT_ROOM
 }
 
