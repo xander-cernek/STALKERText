@@ -12,6 +12,16 @@ FIGHT_ROOM = function()
 	ACTIVE_ENEMY.attack = randomEnemy.attack
 
 	while(ACTIVE_ENEMY.hp > 0) do
+        os.execute("clear")
+        local hudText = string.format(HUD_TEXT_EN, PLAYER.name, PLAYER.health, PLAYER.weight, PLAYER.value)
+		print(hudText)
+        if _G.PLAYER.health <= 0 then
+            print("GAME OVER ... ")
+            print("Press ENTER to exit")
+            io.read()
+            break
+        end
+
 		local activeEnemy = string.format(ENEMY_TEXT_EN, ACTIVE_ENEMY.name, ACTIVE_ENEMY.hp)
 		print(activeEnemy)
 
@@ -42,14 +52,36 @@ FIGHT_ROOM = function()
 		currentAp = _G.PLAYER.ap
 		ZONE_LEVEL_PROGRESS_BAR = ZONE_LEVEL_PROGRESS_BAR .. "x"
 	end
-		
-	trigger_event(ON_ENEMY_KILLED, ACTIVE_ENEMY.name)
+	
+    if (ACTIVE_ENEMY.hp <= 0) then
+	    trigger_event(ON_ENEMY_KILLED, ACTIVE_ENEMY.name)
+    end
 	print(CONTINUE_EN)
 end
 
 ENCOUNTER_ROOM = function()
-	print("FOO\n")
+	print("Press 1 to grab the object.")
 end
+
+FOO = function()
+end
+
+NEXT_LEVEL = function()
+    print("Not implemented")
+end
+
+-- Enter and Exit rooms
+ENTER_ROOM = {
+    name = "Entrance",
+    flavor = "You stand at the entrance to the Zone. The heavy weight of sadness hangs in the air.\nThere is no turning back now, you must proceed...\n",
+    exec = FOO
+}
+
+EXIT_ROOM = {
+    name = "Stairs",
+    flavor = "You find stairs leading downward, further into the Zone",
+    exec = NEXT_LEVEL
+}
 
 -- Level 1 Rooms
 ZOMBIE_ROOM = {
@@ -64,6 +96,31 @@ TREASURE_ROOM = {
 	exec = ENCOUNTER_ROOM
 }
 
-rooms.LEVEL_1 = { ZOMBIE_ROOM, TREASURE_ROOM, TREASURE_ROOM, TREASURE_ROOM }
+rooms.LEVEL_1 = {
+    ["START"] = {
+        roomType = ENTER_ROOM,
+        doors = {1}
+    },
+    [1] = {
+        roomType = ZOMBIE_ROOM,
+        doors = {2, 3}
+    },
+    [2] = {
+        roomType = TREASURE_ROOM,
+        doors = {1, 3, 4}
+    },
+    [3] = {
+        roomType = ZOMBIE_ROOM,
+        nextRooms = {1, 2, 4}
+    },
+    [4] = {
+        roomType = TREASURE_ROOM,
+        doors = {2, 3, 5} 
+    },
+    [5] = {
+        roomType = EXIT_ROOM,
+        doors = {EXIT_ROOM}
+    }
+}
 
 return rooms
