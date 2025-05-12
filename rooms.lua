@@ -12,7 +12,7 @@ FIGHT_ROOM = function()
 	ACTIVE_ENEMY.attack = randomEnemy.attack
 
 	while(ACTIVE_ENEMY.hp > 0) do
-        os.execute("clear")
+        -- os.execute("clear")
         local hudText = string.format(HUD_TEXT_EN, PLAYER.name, PLAYER.health, PLAYER.weight, PLAYER.value)
 		print(hudText)
         if _G.PLAYER.health <= 0 then
